@@ -1,0 +1,68 @@
+{
+  "name": "@propitech/stimulus-widgets",
+  "version": "0.1.0",
+  "description": "Turbo-safe Stimulus controllers that wrap Choices.js selects and flatpickr date/time pickers, with a themeable, variable-driven CSS skin.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Propitech",
+  "homepage": "https://github.com/propitech/stimulus-widgets#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/propitech/stimulus-widgets.git"
+  },
+  "bugs": {
+    "url": "https://github.com/propitech/stimulus-widgets/issues"
+  },
+  "keywords": [
+    "stimulus",
+    "hotwire",
+    "turbo",
+    "choices.js",
+    "flatpickr",
+    "select",
+    "datepicker",
+    "timepicker"
+  ],
+  "files": [
+    "src",
+    "styles"
+  ],
+  "exports": {
+    ".": "./src/index.js",
+    "./controllers/select": "./src/controllers/select_controller.js",
+    "./controllers/datepicker": "./src/controllers/datepicker_controller.js",
+    "./controllers/timepicker": "./src/controllers/timepicker_controller.js",
+    "./controllers/widget": "./src/controllers/widget_controller.js",
+    "./choices_config": "./src/choices_config.js",
+    "./styles/variables.css": "./styles/variables.css",
+    "./styles/select.css": "./styles/select.css",
+    "./styles/flatpickr.css": "./styles/flatpickr.css",
+    "./styles/all.css": "./styles/all.css"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --check .",
+    "build:check": "esbuild src/index.js --bundle --format=esm --external:@hotwired/stimulus --external:choices.js --external:flatpickr --outfile=/dev/null",
+    "test": "playwright test",
+    "test:setup": "playwright install --with-deps chromium"
+  },
+  "peerDependencies": {
+    "@hotwired/stimulus": ">=3.0.0",
+    "choices.js": ">=10.0.0",
+    "flatpickr": ">=4.6.0"
+  },
+  "devDependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo": "^8.0.13",
+    "@playwright/test": "^1.49.1",
+    "choices.js": "^11.1.0",
+    "esbuild": "^0.24.2",
+    "eslint": "^9.18.0",
+    "flatpickr": "^4.6.13",
+    "neostandard": "^0.12.0",
+    "prettier": "^3.4.2"
+  }
+}

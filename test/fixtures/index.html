@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>stimulus-widgets fixtures</title>
+    <link rel="stylesheet" href="/dist/app.css" />
+  </head>
+  <body>
+    <main>
+      <div id="select-field" data-controller="stimulus-select">
+        <label for="fruit">Fruit</label>
+        <select id="fruit" name="fruit">
+          <option value="">—</option>
+          <option value="apple">Apple</option>
+          <option value="pear">Pear</option>
+        </select>
+      </div>
+
+      <div id="date-field" data-controller="datepicker">
+        <label for="d">Date</label>
+        <input
+          id="d"
+          type="text"
+          data-datepicker-target="input"
+          autocomplete="off"
+        />
+      </div>
+
+      <div
+        id="time-field"
+        data-controller="timepicker"
+        data-timepicker-increment-value="15"
+      >
+        <label for="t">Time</label>
+        <input
+          id="t"
+          type="text"
+          data-timepicker-target="input"
+          autocomplete="off"
+        />
+      </div>
+    </main>
+
+    <script type="module" src="/dist/app.js"></script>
+  </body>
+</html>

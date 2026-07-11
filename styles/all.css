@@ -1,0 +1,6 @@
+/* Every widget skin plus the theme variables, in one import. This does NOT
+   include the flatpickr / Choices base stylesheets — those are peer libraries;
+   import them first (see the README quick start). */
+@import "./variables.css";
+@import "./select.css";
+@import "./flatpickr.css";

@@ -1,0 +1,46 @@
+/*
+ * Theme surface for @propitech/stimulus-widgets.
+ *
+ * Every colour, radius, and shadow in select.css and flatpickr.css resolves
+ * through one of these custom properties. Theme the widgets by overriding the
+ * variables — in :root for light, under `.dark` for dark — and never edit the
+ * component stylesheets. See docs/customizing-css.md for recipes (plain CSS and
+ * Tailwind). Defaults below are a neutral slate/indigo so the widgets look
+ * finished before you theme them.
+ *
+ * Dark mode keys off a `.dark` class on an ancestor (the Tailwind / Hotwire
+ * convention). To drive it from the OS instead, copy the `.dark` block into a
+ * `@media (prefers-color-scheme: dark) { :root { … } }` — see the docs.
+ */
+:root {
+  --sw-surface: #ffffff; /* control + calendar background */
+  --sw-surface-emphasis: #f3f4f6; /* hover / raised rows */
+  --sw-surface-inset: #f9fafb; /* dropdown / popup panel */
+  --sw-text: #111827; /* primary text */
+  --sw-muted: #6b7280; /* weekdays, disabled days, separators */
+  --sw-border: #d1d5db; /* hairlines */
+  --sw-border-strong: #9ca3af; /* emphasised borders */
+  --sw-accent: #4f46e5; /* selected fill, focus ring, today */
+  --sw-accent-contrast: #ffffff; /* text on an accent fill */
+  --sw-accent-soft: #e0e7ff; /* in-range tint */
+  --sw-accent-emphasis: #4338ca; /* accent hover */
+  --sw-radius: 0.5rem;
+  --sw-ring-width: 1px;
+  --sw-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --sw-font: inherit; /* header month/year font family */
+}
+
+.dark {
+  --sw-surface: #1f2937;
+  --sw-surface-emphasis: #111827;
+  --sw-surface-inset: #1f2937;
+  --sw-text: #f3f4f6;
+  --sw-muted: #9ca3af;
+  --sw-border: #374151;
+  --sw-border-strong: #4b5563;
+  --sw-accent: #6366f1;
+  --sw-accent-contrast: #ffffff;
+  --sw-accent-soft: #312e81;
+  --sw-accent-emphasis: #818cf8;
+}

@@ -1,0 +1,65 @@
+/* stylelint-disable selector-class-pattern -- Choices.js ships BEM-ish class
+   names (choices__inner, is-focused, …) we don't control. */
+
+/*
+ * Neutral skin for the Choices.js combobox, layered over Choices' own base
+ * stylesheet (import that first — see the README). Only colour, radius, and
+ * border are restated; Choices owns layout. Every value resolves through a
+ * --sw-* variable (styles/variables.css), so the light/dark split lives in those
+ * variables and each rule is written once. The class hooks below are Choices'
+ * defaults, restated in src/choices_config.js as the documented override surface.
+ */
+
+.choices__inner {
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background-color: transparent;
+  color: var(--sw-text);
+}
+
+.choices.is-focused .choices__inner {
+  border-color: var(--sw-accent);
+  box-shadow: 0 0 0 var(--sw-ring-width) var(--sw-accent);
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+  border: 1px solid var(--sw-border);
+  background-color: var(--sw-surface-inset);
+  color: var(--sw-text);
+}
+
+.choices__item--choice {
+  color: var(--sw-text);
+}
+
+.choices__item--choice:hover,
+.choices__item--choice.is-highlighted {
+  background-color: var(--sw-surface-emphasis);
+}
+
+/* Chips in a multi-select. */
+.choices__list--multiple .choices__item {
+  border: 1px solid var(--sw-accent);
+  border-radius: var(--sw-radius);
+  background-color: var(--sw-accent);
+  color: var(--sw-accent-contrast);
+}
+
+.choices__input {
+  background-color: transparent;
+  color: var(--sw-text);
+}
+
+.choices__placeholder {
+  color: var(--sw-muted);
+  opacity: 1;
+}
+
+.choices__notice,
+.has-no-results,
+.has-no-choices {
+  color: var(--sw-muted);
+}
+
+/* stylelint-enable selector-class-pattern */

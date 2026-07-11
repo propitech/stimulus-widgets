@@ -1,0 +1,183 @@
+/* stylelint-disable selector-class-pattern -- flatpickr ships camelCase class
+   names (inRange, startRange, prevMonthDay, …) we don't control. */
+
+/*
+ * Neutral skin for the flatpickr calendar + time popup, layered over flatpickr's
+ * own base stylesheet (import that first — see the README). Only colour, radius,
+ * and border are restated; layout stays as flatpickr ships it. Every value
+ * resolves through a --sw-* variable (styles/variables.css), so the light/dark
+ * split lives in those variables and each rule is written once. Selected cells
+ * use the accent fill with accent-contrast text (keep that pair AA-legible when
+ * you retheme); the in-range fill stays a soft accent tint so a solid endpoint
+ * always reads apart from the range.
+ */
+
+.flatpickr-calendar {
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background-color: var(--sw-surface);
+  box-shadow: var(--sw-shadow);
+}
+
+/* Pointer arrow tracks the panel surface + hairline. */
+.flatpickr-calendar.arrowTop::before,
+.flatpickr-calendar.arrowBottom::before {
+  border-bottom-color: var(--sw-border);
+  border-top-color: var(--sw-border);
+}
+
+.flatpickr-calendar.arrowTop::after,
+.flatpickr-calendar.arrowBottom::after {
+  border-bottom-color: var(--sw-surface);
+  border-top-color: var(--sw-surface);
+}
+
+/* Header: month navigation + current month/year. */
+.flatpickr-months,
+.flatpickr-month {
+  color: var(--sw-text);
+  background-color: transparent;
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+  border-radius: var(--sw-radius);
+  color: var(--sw-text);
+}
+
+.flatpickr-months .flatpickr-prev-month:hover,
+.flatpickr-months .flatpickr-next-month:hover {
+  background-color: var(--sw-surface-emphasis);
+}
+
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+  fill: currentcolor;
+}
+
+.flatpickr-current-month .cur-month,
+.flatpickr-current-month .cur-year,
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  font-family: var(--sw-font);
+  font-weight: 600;
+  color: var(--sw-text);
+}
+
+.flatpickr-monthDropdown-months {
+  background-color: var(--sw-surface);
+}
+
+/* Weekday header row — small letter-spaced caps. */
+.flatpickr-weekday {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sw-muted);
+}
+
+/* Day cells. */
+.flatpickr-day {
+  border-radius: var(--sw-radius);
+  color: var(--sw-text);
+}
+
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+  background-color: var(--sw-surface-emphasis);
+}
+
+.flatpickr-day.today {
+  border-color: var(--sw-accent);
+  font-weight: 600;
+  color: var(--sw-accent);
+}
+
+.flatpickr-day.today:hover,
+.flatpickr-day.today:focus {
+  border-color: var(--sw-accent);
+  background-color: var(--sw-surface-emphasis);
+  color: var(--sw-accent);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover {
+  border-color: var(--sw-accent);
+  background-color: var(--sw-accent);
+  color: var(--sw-accent-contrast);
+}
+
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover {
+  background-color: var(--sw-accent-emphasis);
+  border-color: var(--sw-accent-emphasis);
+}
+
+.flatpickr-day.inRange {
+  box-shadow: none;
+  border-color: var(--sw-accent-soft);
+  background-color: var(--sw-accent-soft);
+  color: var(--sw-text);
+}
+
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay,
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+  color: var(--sw-muted);
+}
+
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+/* Time popup (noCalendar): steppers, `:` separator, up/down triangles. No
+   calendar sits above it, so the default top hairline is dropped. */
+.flatpickr-calendar.hasTime.noCalendar .flatpickr-time {
+  border-top: 0;
+}
+
+.flatpickr-time .numInput,
+.flatpickr-time .flatpickr-am-pm {
+  color: var(--sw-text);
+}
+
+.flatpickr-time .numInput:hover,
+.flatpickr-time .numInput:focus,
+.flatpickr-time .flatpickr-am-pm:hover,
+.flatpickr-time .flatpickr-am-pm:focus {
+  background-color: var(--sw-surface-emphasis);
+}
+
+.flatpickr-time .flatpickr-time-separator {
+  color: var(--sw-muted);
+}
+
+.flatpickr-time .numInputWrapper:hover {
+  background-color: var(--sw-surface-emphasis);
+}
+
+.flatpickr-time .numInputWrapper span {
+  border-color: var(--sw-border);
+}
+
+.flatpickr-time .numInputWrapper span:hover {
+  background-color: var(--sw-border);
+}
+
+.flatpickr-time .numInputWrapper .arrowUp::after {
+  border-bottom-color: var(--sw-muted);
+}
+
+.flatpickr-time .numInputWrapper .arrowDown::after {
+  border-top-color: var(--sw-muted);
+}
+
+/* stylelint-enable selector-class-pattern */
