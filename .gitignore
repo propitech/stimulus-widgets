@@ -1,4 +1,7 @@
 node_modules/
+# Local npm-wrapper (pnpm-backed) artifacts — CI uses npm + package-lock.json.
+pnpm-lock.yaml
+pnpm-workspace.yaml
 /test/fixtures/dist/
 /test-results/
 /playwright-report/

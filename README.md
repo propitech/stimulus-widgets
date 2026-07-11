@@ -18,15 +18,21 @@ after a back/forward restore. That contract lives in one base class
 
 ## Install
 
+This package is consumed as a **git dependency** — it is not published to a
+registry. Pin a tag (or a commit SHA) so upgrades are deliberate:
+
 ```sh
-npm install @propitech/stimulus-widgets
+npm install github:propitech/stimulus-widgets#v0.1.0
 npm install @hotwired/stimulus choices.js flatpickr   # peer dependencies
 ```
 
+That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.1.0"`
+in your `package.json`. Bump the ref to take a new version.
+
 `@hotwired/stimulus`, `choices.js`, and `flatpickr` are **peer dependencies** —
 your app owns their versions and bundles them once. This package ships ES module
-source and is bundled by your existing pipeline (esbuild, Vite, Rollup,
-Webpack).
+source (no build step) and is bundled by your existing pipeline (esbuild, Vite,
+Rollup, Webpack).
 
 ## Quick start
 
