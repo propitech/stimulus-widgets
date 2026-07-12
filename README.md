@@ -22,11 +22,11 @@ This package is consumed as a **git dependency** — it is not published to a
 registry. Pin a tag (or a commit SHA) so upgrades are deliberate:
 
 ```sh
-npm install github:propitech/stimulus-widgets#v0.1.0
+npm install github:propitech/stimulus-widgets#v0.2.0
 npm install @hotwired/stimulus choices.js flatpickr   # peer dependencies
 ```
 
-That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.1.0"`
+That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.2.0"`
 in your `package.json`. Bump the ref to take a new version.
 
 `@hotwired/stimulus`, `choices.js`, and `flatpickr` are **peer dependencies** —
@@ -133,11 +133,48 @@ instead of a hung CI run.
 - `disableMobile: true` keeps the skinned flatpickr calendar on touch devices
   rather than falling back to the OS picker.
 
-## Rails
+## Rails / SimpleForm
 
-This package is JavaScript + CSS. A declarative Rails/SimpleForm companion (an
-input that auto-wires `data-controller`) is planned separately; for now, render
-the wrapper markup above from your templates.
+The repository also ships a small Ruby gem, **`stimulus_widgets`**, so an ERB
+template never hand-writes the wrapper/target markup (and never mounts
+`data-controller` on the moved input by mistake). The gem is versioned in
+lockstep with the JS package — consume both at the same tag:
+
+```ruby
+# Gemfile
+gem "stimulus_widgets", github: "propitech/stimulus-widgets", tag: "v0.2.0"
+```
+
+```jsonc
+// package.json — same tag
+"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.2.0"
+```
+
+It registers three SimpleForm inputs (`simple_form` `>= 5.0`) in SimpleForm's own
+lookup namespace, so `as:` resolves them with plain `simple_form_for` or an app's
+custom `SimpleForm::FormBuilder` — no `map_type` wiring:
+
+```erb
+<%= simple_form_for @lesson do |f| %>
+  <%= f.input :starts_on, as: :datepicker %>
+  <%= f.input :opens_at,  as: :timepicker %>
+  <%= f.input :studio_id, as: :stimulus_select, collection: Studio.all %>
+<% end %>
+```
+
+Each input emits **only** the lifecycle contract: `data-controller` on the
+SimpleForm wrapper, and `data-<id>-target="input"` on the field (the select
+controller finds its own `<select>`, so that input gets no target). Everything
+else stays yours — pass Stimulus value options and design classes through the
+usual `input_html:` / `wrapper_html:`, which are preserved:
+
+```erb
+<%= f.input :opens_at, as: :timepicker,
+      input_html: { data: { timepicker_increment_value: 15 } } %>
+```
+
+The gem styles nothing; your app owns the input classes (via its SimpleForm
+wrapper config or `input_html: { class: … }`) and the CSS skin.
 
 ## License
 

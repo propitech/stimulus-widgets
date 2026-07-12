@@ -9,3 +9,9 @@ pnpm-workspace.yaml
 /playwright/.cache/
 *.log
 .DS_Store
+
+# Ruby gem (companion SimpleForm inputs)
+/.bundle/
+/Gemfile.lock
+/coverage/
+/pkg/

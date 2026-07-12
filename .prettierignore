@@ -3,3 +3,11 @@ test/fixtures/dist/
 test-results/
 playwright-report/
 package-lock.json
+
+# Ruby gem surface (rubocop owns its formatting)
+/lib/
+/spec/
+/Gemfile
+/Rakefile
+/*.gemspec
+/vendor/
