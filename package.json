@@ -1,6 +1,6 @@
 {
   "name": "@propitech/stimulus-widgets",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Turbo-safe Stimulus controllers that wrap Choices.js selects and flatpickr date/time pickers, with a themeable, variable-driven CSS skin.",
   "type": "module",
   "private": true,
