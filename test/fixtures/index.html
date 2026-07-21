@@ -40,6 +40,21 @@
           autocomplete="off"
         />
       </div>
+
+      <form id="avatar-form">
+        <div
+          id="avatar-field"
+          data-controller="avatar-upload"
+          data-avatar-upload-direct-upload-url-value="/rails/active_storage/direct_uploads"
+        >
+          <div data-avatar-upload-target="dashboard"></div>
+          <input
+            type="hidden"
+            name="avatar"
+            data-avatar-upload-target="signedId"
+          />
+        </div>
+      </form>
     </main>
 
     <script type="module" src="/dist/app.js"></script>
