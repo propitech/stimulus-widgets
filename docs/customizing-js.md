@@ -81,6 +81,46 @@ library reparents, and destroy it on `disconnect` — and you get an infinite
 `connect`/`disconnect` loop that hangs the browser. That is the bug this whole
 package exists to prevent; the base class is how it stays prevented.
 
+## Extending the avatar upload
+
+`AvatarUploadController` is itself a base built on `WidgetController`. It wires the
+shared Uppy kernel — inline Dashboard, image editor, ActiveStorage upload,
+`signed_id` capture, and the same Turbo-safe lifecycle — and leaves the richer,
+app-specific behaviour to a subclass through four hooks. Override the hooks, never
+the lifecycle: do not touch `connect`, `disconnect`, or `buildWidget`'s teardown.
+
+- `coreOptions`, `dashboardOptions`, `imageEditorOptions` — getters merged over
+  the base Uppy / Dashboard / ImageEditor options.
+- `onUppy(uppy)` — runs after the base plugins are wired, to `.use()` extra
+  plugins and bind extra events on the instance.
+- `uploadSucceeded(file, response)` — runs after the `signed_id` is written to the
+  hidden input, e.g. to submit the form.
+
+```js
+import { AvatarUploadController } from "@propitech/stimulus-widgets";
+import Webcam from "@uppy/webcam";
+
+// data-controller="avatar-upload" on the wrapper (see the README markup).
+export default class extends AvatarUploadController {
+  get dashboardOptions() {
+    return { height: 600, plugins: ["Webcam", "ImageEditor"] };
+  }
+
+  onUppy(uppy) {
+    uppy.use(Webcam, { target: "Dashboard", modes: ["picture"] });
+  }
+
+  uploadSucceeded() {
+    this.element.closest("form")?.requestSubmit();
+  }
+}
+```
+
+Register the subclass under `avatar-upload` (or any identifier you like). Keep
+app-only plugins such as `@uppy/webcam` in your app's own dependencies — the
+package peers only the base kernel, so consumers that do not add a webcam never
+pull it.
+
 ## Registration variants
 
 **One call, everything** (the quick-start path):

@@ -1,14 +1,16 @@
 # @propitech/stimulus-widgets
 
 Turbo-safe [Stimulus](https://stimulus.hotwired.dev) controllers that wrap
-[Choices.js](https://github.com/Choices-js/Choices) selects and
-[flatpickr](https://flatpickr.js.org) date/time pickers, with a themeable,
+[Choices.js](https://github.com/Choices-js/Choices) selects,
+[flatpickr](https://flatpickr.js.org) date/time pickers, and an
+[Uppy](https://uppy.io)/ActiveStorage avatar upload, with a themeable,
 variable-driven CSS skin.
 
 The hard part these controllers solve is not calling the library — it is keeping
-it alive under Turbo. A widget library like Choices or flatpickr **reparents its
-host element** (Choices moves your `<select>` into its own container; flatpickr
-wraps the input and injects a calendar beside it). Stimulus reads a DOM move as
+it alive under Turbo. A widget library like Choices, flatpickr, or Uppy
+**reparents or injects into its host element** (Choices moves your `<select>`
+into its own container; flatpickr wraps the input and injects a calendar beside
+it; Uppy renders an inline Dashboard into a target). Stimulus reads a DOM move as
 `disconnect` + `connect`, so a controller bound to the moved element that calls
 `destroy()` on `disconnect` re-enters `connect()` forever and **hangs the
 browser**. Every controller here is bound to a **stable wrapper**, tears the
@@ -22,15 +24,22 @@ This package is consumed as a **git dependency** — it is not published to a
 registry. Pin a tag (or a commit SHA) so upgrades are deliberate:
 
 ```sh
-npm install github:propitech/stimulus-widgets#v0.2.0
-npm install @hotwired/stimulus choices.js flatpickr   # peer dependencies
+npm install github:propitech/stimulus-widgets#v0.3.0
+npm install @hotwired/stimulus                        # required peer
+# then only the peers for the widgets you use:
+npm install choices.js                                # stimulus-select
+npm install flatpickr                                 # datepicker / timepicker
+npm install @uppy/core @uppy/dashboard @uppy/image-editor \
+  @rails/activestorage @excid3/uppy-activestorage-upload   # avatar-upload
 ```
 
-That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.2.0"`
+That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.3.0"`
 in your `package.json`. Bump the ref to take a new version.
 
-`@hotwired/stimulus`, `choices.js`, and `flatpickr` are **peer dependencies** —
-your app owns their versions and bundles them once. This package ships ES module
+Only `@hotwired/stimulus` is a required peer. The library peers
+(`choices.js`, `flatpickr`, the Uppy/ActiveStorage set) are **optional** — install
+just the ones for the widgets you register, and your bundler tree-shakes the rest.
+Your app owns their versions and bundles them once. This package ships ES module
 source (no build step) and is bundled by your existing pipeline (esbuild, Vite,
 Rollup, Webpack).
 
@@ -82,20 +91,61 @@ The pickers use a plain `type="text"` input, not `type="date"`/`type="time"`, so
 the calendar is the skinned flatpickr one on every device rather than the
 browser's native, off-brand control.
 
+### Avatar upload
+
+`AvatarUploadController` wraps Uppy's inline Dashboard + image editor and uploads
+through ActiveStorage. Unlike the pickers it is **not auto-registered**: it is a
+base most apps subclass to add their own touches (a webcam, a zoom slider, theme
+sync), then register under `avatar-upload`. Register the bare base directly if you
+only need the plain crop-and-upload:
+
+```js
+import { AvatarUploadController } from "@propitech/stimulus-widgets";
+application.register("avatar-upload", AvatarUploadController);
+```
+
+```js
+import "@uppy/core/css/style.min.css";
+import "@uppy/dashboard/css/style.min.css";
+import "@uppy/image-editor/css/style.min.css";
+```
+
+```html
+<div
+  data-controller="avatar-upload"
+  data-avatar-upload-direct-upload-url-value="/rails/active_storage/direct_uploads"
+>
+  <div data-avatar-upload-target="dashboard"></div>
+  <input
+    type="hidden"
+    name="user[avatar]"
+    data-avatar-upload-target="signedId"
+  />
+</div>
+```
+
+On a successful upload the ActiveStorage `signed_id` is written to the `signedId`
+input. To extend — add a webcam or a zoom slider, submit the form on success —
+subclass and use the hooks (`onUppy`, `uploadSucceeded`, the option getters); see
+[docs/customizing-js.md](docs/customizing-js.md). Do not override the lifecycle.
+
 ## Options
 
 Set options declaratively with Stimulus values on the wrapper.
 
-| Controller        | Value attribute                                 | Default | Effect                                   |
-| ----------------- | ----------------------------------------------- | ------- | ---------------------------------------- |
-| `stimulus-select` | `data-stimulus-select-search-enabled-value`     | `true`  | Show the type-to-filter search box       |
-| `stimulus-select` | `data-stimulus-select-remove-item-button-value` | `false` | Show a remove (×) button on chosen items |
-| `stimulus-select` | `data-stimulus-select-placeholder-value`        | —       | Placeholder text for an empty control    |
-| `datepicker`      | `data-datepicker-date-format-value`             | `Y-m-d` | flatpickr date format                    |
-| `datepicker`      | `data-datepicker-min-date-value`                | —       | Earliest selectable date                 |
-| `datepicker`      | `data-datepicker-max-date-value`                | —       | Latest selectable date                   |
-| `timepicker`      | `data-timepicker-increment-value`               | `5`     | Minute step                              |
-| `timepicker`      | `data-timepicker-date-format-value`             | `H:i`   | flatpickr time format (24h when `H:i`)   |
+| Controller        | Value attribute                                 | Default                      | Effect                                                                            |
+| ----------------- | ----------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------- |
+| `stimulus-select` | `data-stimulus-select-search-enabled-value`     | `true`                       | Show the type-to-filter search box                                                |
+| `stimulus-select` | `data-stimulus-select-remove-item-button-value` | `false`                      | Show a remove (×) button on chosen items                                          |
+| `stimulus-select` | `data-stimulus-select-placeholder-value`        | —                            | Placeholder text for an empty control                                             |
+| `datepicker`      | `data-datepicker-date-format-value`             | `Y-m-d`                      | flatpickr date format                                                             |
+| `datepicker`      | `data-datepicker-min-date-value`                | —                            | Earliest selectable date                                                          |
+| `datepicker`      | `data-datepicker-max-date-value`                | —                            | Latest selectable date                                                            |
+| `timepicker`      | `data-timepicker-increment-value`               | `5`                          | Minute step                                                                       |
+| `timepicker`      | `data-timepicker-date-format-value`             | `H:i`                        | flatpickr time format (24h when `H:i`)                                            |
+| `avatar-upload`   | `data-avatar-upload-direct-upload-url-value`    | —                            | ActiveStorage direct-upload URL (falls back to `<meta name="direct-upload-url">`) |
+| `avatar-upload`   | `data-avatar-upload-allowed-file-types-value`   | `["image/png","image/jpeg"]` | JSON array of accepted MIME types                                                 |
+| `avatar-upload`   | `data-avatar-upload-max-file-size-value`        | —                            | Max upload size in bytes (unset = no limit)                                       |
 
 For options not surfaced as values, subclass a controller and override the
 `options` getter — see [docs/customizing-js.md](docs/customizing-js.md).

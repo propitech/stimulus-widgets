@@ -2,17 +2,24 @@ import WidgetController from "./controllers/widget_controller.js";
 import SelectController from "./controllers/select_controller.js";
 import DatepickerController from "./controllers/datepicker_controller.js";
 import TimepickerController from "./controllers/timepicker_controller.js";
+import AvatarUploadController from "./controllers/avatar_upload_controller.js";
 
 export {
   WidgetController,
   SelectController,
   DatepickerController,
   TimepickerController,
+  AvatarUploadController,
 };
 
 // Identifier → controller map. The identifiers are the `data-controller` names
 // the widgets ship with; keeping them stable means existing markup keeps working
 // after adoption.
+//
+// AvatarUploadController is deliberately absent: it is a base most consumers
+// subclass (to add a webcam, a zoom slider, theme sync, …) and register
+// themselves under `avatar-upload`, so auto-registering the bare base would
+// usually be the wrong controller. Import and register it explicitly instead.
 export const controllers = {
   "stimulus-select": SelectController,
   datepicker: DatepickerController,
