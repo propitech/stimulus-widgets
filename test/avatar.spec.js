@@ -77,3 +77,64 @@ test("avatar runs a file through the vendored ActiveStorage uploader and writes 
     "fake-signed-id",
   );
 });
+
+test("avatar upload releases its per-upload uppy listeners once the upload settles", async ({
+  page,
+}) => {
+  await page.route("**/rails/active_storage/direct_uploads", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        signed_id: "fake-signed-id",
+        filename: "avatar.png",
+        content_type: "image/png",
+        byte_size: 4,
+        checksum: "deadbeef==",
+        direct_upload: { url: "https://blob.example/put", headers: {} },
+      }),
+    }),
+  );
+  await page.route("https://blob.example/put", (route) =>
+    route.fulfill({ status: 200, body: "" }),
+  );
+
+  // Count net listeners the vendored plugin adds per upload() call for the
+  // two events it wraps in an EventManager: a leak would leave one of each
+  // behind after the upload settles.
+  await page.evaluate(() => {
+    const field = document.querySelector("#avatar-field");
+    const controller = window.stimulus.getControllerForElementAndIdentifier(
+      field,
+      "avatar-upload",
+    );
+    const uppy = controller.widget;
+    const tracked = ["file-removed", "cancel-all"];
+    window.__netListeners = { "file-removed": 0, "cancel-all": 0 };
+    const originalOn = uppy.on.bind(uppy);
+    const originalOff = uppy.off.bind(uppy);
+    uppy.on = (event, fn) => {
+      if (tracked.includes(event)) window.__netListeners[event] += 1;
+      return originalOn(event, fn);
+    };
+    uppy.off = (event, fn) => {
+      if (tracked.includes(event)) window.__netListeners[event] -= 1;
+      return originalOff(event, fn);
+    };
+  });
+
+  const field = page.locator("#avatar-field");
+  await field
+    .locator("input.uppy-Dashboard-input:not([webkitdirectory])")
+    .setInputFiles({
+      name: "avatar.png",
+      mimeType: "image/png",
+      buffer: Buffer.from([137, 80, 78, 71]),
+    });
+  await field.locator(".uppy-StatusBar-actionBtn--upload").click();
+  await expect(field.locator("input[name='avatar']")).toHaveValue(
+    "fake-signed-id",
+  );
+
+  const remaining = await page.evaluate(() => window.__netListeners);
+  expect(remaining).toEqual({ "file-removed": 0, "cancel-all": 0 });
+});

@@ -13,8 +13,11 @@
 // and both the success- and error-path file-state writes are dropped, since
 // core's own `upload-success` and `upload-error` listeners overwrite them
 // (with the blob, and with `undefined`, respectively) before anything can
-// read them.
-import { BasePlugin } from "@uppy/core";
+// read them. One further departure: the per-upload `file-removed` and
+// `cancel-all` listeners are registered and torn down through an
+// `EventManager` scoped to each `upload()` call, instead of accumulating on
+// `this.uppy` for the plugin's lifetime.
+import { BasePlugin, EventManager } from "@uppy/core";
 import { RateLimitedQueue } from "@uppy/core/utils";
 import { DirectUpload } from "@rails/activestorage";
 
@@ -85,7 +88,9 @@ export default class ActiveStorageUpload extends BasePlugin {
   upload(file, current, total) {
     this.uppy.log(`uploading ${current} of ${total}`);
 
-    return new Promise((resolve, reject) => {
+    const eventManager = new EventManager(this.uppy);
+
+    const promise = new Promise((resolve, reject) => {
       const timer = this.createProgressTimeout(this.opts.timeout, (error) => {
         this.uppy.emit("upload-error", file, error);
         reject(error);
@@ -141,18 +146,20 @@ export default class ActiveStorageUpload extends BasePlugin {
         }
       });
 
-      this.uppy.on("file-removed", (removedFile) => {
+      eventManager.on("file-removed", (removedFile) => {
         if (removedFile.id === file.id) {
           timer.done();
           upload.abort && upload.abort();
         }
       });
 
-      this.uppy.on("cancel-all", () => {
+      eventManager.on("cancel-all", () => {
         timer.done();
         upload.abort && upload.abort();
       });
     });
+
+    return promise.finally(() => eventManager.remove());
   }
 
   uploadFiles(files) {
