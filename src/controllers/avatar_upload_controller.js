@@ -1,7 +1,7 @@
 import Uppy from "@uppy/core";
 import Dashboard from "@uppy/dashboard";
 import ImageEditor from "@uppy/image-editor";
-import ActiveStorageUpload from "@excid3/uppy-activestorage-upload";
+import ActiveStorageUpload from "../vendor/active_storage_upload.js";
 import WidgetController from "./widget_controller.js";
 
 // Base for an avatar / single-image upload built on Uppy's inline Dashboard +

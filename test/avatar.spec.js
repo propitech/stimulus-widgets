@@ -42,3 +42,38 @@ test("avatar tears the Dashboard down and clears the target on turbo:before-cach
   await expect(target).toHaveCount(1);
   await expect(target.locator("*")).toHaveCount(0);
 });
+
+test("avatar runs a file through the vendored ActiveStorage uploader and writes the signed id", async ({
+  page,
+}) => {
+  await page.route("**/rails/active_storage/direct_uploads", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        signed_id: "fake-signed-id",
+        filename: "avatar.png",
+        content_type: "image/png",
+        byte_size: 4,
+        checksum: "deadbeef==",
+        direct_upload: { url: "https://blob.example/put", headers: {} },
+      }),
+    }),
+  );
+  await page.route("https://blob.example/put", (route) =>
+    route.fulfill({ status: 200, body: "" }),
+  );
+
+  const field = page.locator("#avatar-field");
+  await field
+    .locator("input.uppy-Dashboard-input:not([webkitdirectory])")
+    .setInputFiles({
+      name: "avatar.png",
+      mimeType: "image/png",
+      buffer: Buffer.from([137, 80, 78, 71]),
+    });
+  await field.locator(".uppy-StatusBar-actionBtn--upload").click();
+
+  await expect(field.locator("input[name='avatar']")).toHaveValue(
+    "fake-signed-id",
+  );
+});

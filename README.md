@@ -24,16 +24,16 @@ This package is consumed as a **git dependency** — it is not published to a
 registry. Pin a tag (or a commit SHA) so upgrades are deliberate:
 
 ```sh
-npm install github:propitech/stimulus-widgets#v0.3.0
+npm install github:propitech/stimulus-widgets#v0.4.0
 npm install @hotwired/stimulus                        # required peer
 # then only the peers for the widgets you use:
 npm install choices.js                                # stimulus-select
 npm install flatpickr                                 # datepicker / timepicker
 npm install @uppy/core @uppy/dashboard @uppy/image-editor \
-  @rails/activestorage @excid3/uppy-activestorage-upload   # avatar-upload
+  @rails/activestorage                                # avatar-upload
 ```
 
-That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.3.0"`
+That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.4.0"`
 in your `package.json`. Bump the ref to take a new version.
 
 Only `@hotwired/stimulus` is a required peer. The library peers
