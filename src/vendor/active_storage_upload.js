@@ -10,9 +10,10 @@
 // `file.id` instead of a minted one; the `upload-cancel` listener is
 // dropped, since core 6 never emits that event (per-file cancellation goes
 // through `removeFile`, which the `file-removed` listener already covers);
-// and the success-path file-state write is dropped, since core's own
-// `upload-success` listener replaces it with the blob before anything can
-// read it.
+// and both the success- and error-path file-state writes are dropped, since
+// core's own `upload-success` and `upload-error` listeners overwrite them
+// (with the blob, and with `undefined`, respectively) before anything can
+// read them.
 import { BasePlugin } from "@uppy/core";
 import { RateLimitedQueue } from "@uppy/core/utils";
 import { DirectUpload } from "@rails/activestorage";
@@ -131,12 +132,6 @@ export default class ActiveStorageUpload extends BasePlugin {
         timer.done();
 
         if (error) {
-          const response = {
-            status: "error",
-          };
-
-          this.uppy.setFileState(file.id, { response });
-
           this.uppy.emit("upload-error", file, error);
           return reject(error);
         } else {
