@@ -3,5 +3,5 @@
 module StimulusWidgets
   # Kept in lockstep with the JS package version in package.json: the Ruby
   # inputs and the Stimulus controllers they wire together ship under one tag.
-  VERSION = "0.4.0"
+  VERSION = "0.4.1"
 end

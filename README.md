@@ -24,7 +24,7 @@ This package is consumed as a **git dependency** — it is not published to a
 registry. Pin a tag (or a commit SHA) so upgrades are deliberate:
 
 ```sh
-npm install github:propitech/stimulus-widgets#v0.4.0
+npm install github:propitech/stimulus-widgets#v0.4.1
 npm install @hotwired/stimulus                        # required peer
 # then only the peers for the widgets you use:
 npm install choices.js                                # stimulus-select
@@ -33,7 +33,7 @@ npm install @uppy/core @uppy/dashboard @uppy/image-editor \
   @rails/activestorage                                # avatar-upload
 ```
 
-That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.4.0"`
+That records `"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.4.1"`
 in your `package.json`. Bump the ref to take a new version.
 
 Only `@hotwired/stimulus` is a required peer. The library peers
@@ -192,12 +192,12 @@ lockstep with the JS package — consume both at the same tag:
 
 ```ruby
 # Gemfile
-gem "stimulus_widgets", github: "propitech/stimulus-widgets", tag: "v0.2.0"
+gem "stimulus_widgets", github: "propitech/stimulus-widgets", tag: "v0.4.1"
 ```
 
 ```jsonc
 // package.json — same tag
-"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.2.0"
+"@propitech/stimulus-widgets": "github:propitech/stimulus-widgets#v0.4.1"
 ```
 
 It registers three SimpleForm inputs (`simple_form` `>= 5.0`) in SimpleForm's own
