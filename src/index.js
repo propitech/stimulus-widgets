@@ -3,6 +3,7 @@ import SelectController from "./controllers/select_controller.js";
 import DatepickerController from "./controllers/datepicker_controller.js";
 import TimepickerController from "./controllers/timepicker_controller.js";
 import AvatarUploadController from "./controllers/avatar_upload_controller.js";
+import ActiveStorageUpload from "./vendor/active_storage_upload.js";
 
 export {
   WidgetController,
@@ -10,6 +11,7 @@ export {
   DatepickerController,
   TimepickerController,
   AvatarUploadController,
+  ActiveStorageUpload,
 };
 
 // Identifier → controller map. The identifiers are the `data-controller` names

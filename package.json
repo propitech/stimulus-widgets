@@ -1,6 +1,6 @@
 {
   "name": "@propitech/stimulus-widgets",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Turbo-safe Stimulus controllers that wrap Choices.js selects, flatpickr date/time pickers, and an Uppy/ActiveStorage avatar upload, with a themeable, variable-driven CSS skin.",
   "type": "module",
   "private": true,
@@ -38,6 +38,7 @@
     "./controllers/timepicker": "./src/controllers/timepicker_controller.js",
     "./controllers/avatar-upload": "./src/controllers/avatar_upload_controller.js",
     "./controllers/widget": "./src/controllers/widget_controller.js",
+    "./uppy/active-storage-upload": "./src/vendor/active_storage_upload.js",
     "./choices_config": "./src/choices_config.js",
     "./styles/variables.css": "./styles/variables.css",
     "./styles/select.css": "./styles/select.css",
@@ -50,24 +51,20 @@
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --check .",
-    "build:check": "esbuild src/index.js --bundle --format=esm --external:@hotwired/stimulus --external:choices.js --external:flatpickr --external:@uppy/* --external:@excid3/* --external:@rails/activestorage --outfile=/dev/null",
+    "build:check": "esbuild src/index.js --bundle --format=esm --external:@hotwired/stimulus --external:choices.js --external:flatpickr --external:@uppy/* --external:@rails/activestorage --outfile=/dev/null",
     "test": "playwright test",
     "test:setup": "playwright install --with-deps chromium"
   },
   "peerDependencies": {
-    "@excid3/uppy-activestorage-upload": ">=2.0.0",
     "@hotwired/stimulus": ">=3.0.0",
     "@rails/activestorage": ">=7.2",
-    "@uppy/core": ">=5.0.0",
-    "@uppy/dashboard": ">=5.0.0",
-    "@uppy/image-editor": ">=4.0.0",
+    "@uppy/core": ">=6.0.0",
+    "@uppy/dashboard": ">=6.0.0",
+    "@uppy/image-editor": ">=5.0.0",
     "choices.js": ">=10.0.0",
     "flatpickr": ">=4.6.0"
   },
   "peerDependenciesMeta": {
-    "@excid3/uppy-activestorage-upload": {
-      "optional": true
-    },
     "@rails/activestorage": {
       "optional": true
     },
@@ -88,14 +85,13 @@
     }
   },
   "devDependencies": {
-    "@excid3/uppy-activestorage-upload": "https://github.com/excid3/uppy-activestorage-upload#c660fda179c9fde1ff7926293c967069b55bf662",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo": "^8.0.13",
     "@playwright/test": "^1.49.1",
     "@rails/activestorage": "^8.1.300",
-    "@uppy/core": "^5.2.0",
-    "@uppy/dashboard": "^5.1.0",
-    "@uppy/image-editor": "^4.1.0",
+    "@uppy/core": "^6.0.1",
+    "@uppy/dashboard": "^6.0.0",
+    "@uppy/image-editor": "^5.0.0",
     "choices.js": "^11.1.0",
     "esbuild": "^0.28.1",
     "eslint": "^9.18.0",

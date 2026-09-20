@@ -121,6 +121,21 @@ app-only plugins such as `@uppy/webcam` in your app's own dependencies — the
 package peers only the base kernel, so consumers that do not add a webcam never
 pull it.
 
+## Using the ActiveStorage uploader outside `AvatarUploadController`
+
+A widget that builds its own Uppy instance instead of subclassing
+`AvatarUploadController` (a dropzone, say) still needs the same ActiveStorage
+upload plugin. It ships as its own export, so it never has to be installed
+separately:
+
+```js
+import Uppy from "@uppy/core";
+import { ActiveStorageUpload } from "@propitech/stimulus-widgets";
+
+const uppy = new Uppy();
+uppy.use(ActiveStorageUpload, { directUploadUrl });
+```
+
 ## Registration variants
 
 **One call, everything** (the quick-start path):
