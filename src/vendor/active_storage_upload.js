@@ -6,8 +6,13 @@
 // message is built directly instead of through `this.i18n()`, which
 // BasePlugin never assigns here; the `limit` option wraps a queue through
 // `RateLimitedQueue#wrapPromiseFunction` instead of using the queue
-// instance as the limiter function; and log lines take their id from
-// `file.id` instead of a minted one.
+// instance as the limiter function; log lines take their id from
+// `file.id` instead of a minted one; the `upload-cancel` listener is
+// dropped, since core 6 never emits that event (per-file cancellation goes
+// through `removeFile`, which the `file-removed` listener already covers);
+// and the success-path file-state write is dropped, since core's own
+// `upload-success` listener replaces it with the blob before anything can
+// read it.
 import { BasePlugin } from "@uppy/core";
 import { RateLimitedQueue } from "@uppy/core/utils";
 import { DirectUpload } from "@rails/activestorage";
@@ -135,13 +140,6 @@ export default class ActiveStorageUpload extends BasePlugin {
           this.uppy.emit("upload-error", file, error);
           return reject(error);
         } else {
-          const response = {
-            status: "success",
-            directUploadSignedId: blob.signed_id,
-          };
-
-          this.uppy.setFileState(file.id, { response });
-
           this.uppy.emit("upload-success", file, blob);
 
           return resolve(file);
@@ -150,13 +148,6 @@ export default class ActiveStorageUpload extends BasePlugin {
 
       this.uppy.on("file-removed", (removedFile) => {
         if (removedFile.id === file.id) {
-          timer.done();
-          upload.abort && upload.abort();
-        }
-      });
-
-      this.uppy.on("upload-cancel", (fileID) => {
-        if (fileID === file.id) {
           timer.done();
           upload.abort && upload.abort();
         }
